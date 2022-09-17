@@ -24,15 +24,15 @@ janela = pygame.display.set_mode((tela_x, tela_y))
 fps = pygame.time.Clock()
 
 
-cobra_pos = [100,50]
+cobra_pos = [300,50]
 
 # primeiros blocos do corpo
 
 cobra_corpo = [
-    [100,50],
-    [90,50],
-    [80,50],
-    [70,50]
+    [300,50],
+    [290, 50],
+    [280, 50],
+    [270, 50]
 ]
 
 # spawn da fruta 
@@ -73,9 +73,10 @@ def gameover():
     janela.blit(gameover_superficie, gameover_rect)
     pygame.display.flip()
 
-    time.sleep(2)
+    time.sleep(1)
     pygame.quit()
     quit()
+    
 
 # GAMEPLAY
 while True:
@@ -83,15 +84,22 @@ while True:
     
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w:
-                andar = 'cima'
-            if event.key == pygame.K_s:
-                andar = 'baixo'
-            if event.key == pygame.K_a:
-                andar = 'esquerda'
-            if event.key == pygame.K_d:
-                andar = 'direita'
-
+            if event.key == pygame.K_w or event.key == pygame.K_UP:
+                if andar != 'baixo':
+                    andar = 'cima'
+            
+            if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                if andar != 'cima':
+                    andar = 'baixo'
+            
+            if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                if andar != 'direita':    
+                    andar = 'esquerda'
+            
+            if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                if andar != 'esquerda':
+                    andar = 'direita'
+    
     # nao pode andar em duas direções ao mesmo tempo
     if andar == 'cima' and andar != 'baixo':
         andar = 'cima'
@@ -102,16 +110,19 @@ while True:
     if andar == 'direita' and andar != 'esquerda':
         andar = 'direita'
 
-    # fazendo a cobrinha andar
+    # fazendo a cobrinha andar 
     if andar == 'cima':
         cobra_pos[1] -= 10
+
     if andar == 'baixo':
         cobra_pos[1] += 10
+
     if andar == 'esquerda':
         cobra_pos[0] -= 10
+ 
     if andar == 'direita':
         cobra_pos[0] += 10
-
+    
     # fazendo a cobrinha crescer
     # se a cobrinha colidir com alguma fruta a pontuação sobe
     cobra_corpo.insert(0, list(cobra_pos))
@@ -138,11 +149,12 @@ while True:
         gameover()
     if cobra_pos[1] < 0 or cobra_pos[1] > tela_y-10:
         gameover()
-
-    # colidindo com o proprio corpo
+    
+    #colidindo com o proprio corpo
     for bloco in cobra_corpo[1:]:
         if cobra_pos[0] == bloco[0] and cobra_pos[1] == bloco[1]:
             gameover()
+    
 
     # mostrando o score
     mostra_pontuacao(1, branco, 'comicsansms', 20)
